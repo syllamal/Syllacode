@@ -1,0 +1,959 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1020">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Syllala">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-512.png">
+<title>Syllala Kabila</title>
+<style>
+:root{--text:#f1f5f9;--muted:#94a3b8;--line:rgba(255,255,255,.1);--glass:rgba(255,255,255,.06);--green:#10b981;--teal:#14b8a6;--red:#ef4444;--purple:#a855f7;--blue:#3b82f6;--amber:#f59e0b}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;min-height:100%}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--text);background:#0b1020;padding-bottom:96px;overflow-x:hidden}
+.bg{position:fixed;inset:0;z-index:-1;background:radial-gradient(circle at 20% 10%,#064e3b 0,transparent 40%),radial-gradient(circle at 80% 30%,#312e81 0,transparent 40%),radial-gradient(circle at 50% 100%,#0f766e 0,transparent 45%),#0b1020}
+.bg i{position:absolute;border-radius:50%;filter:blur(60px);opacity:.35;animation:float 18s ease-in-out infinite}
+.bg i:nth-child(1){width:300px;height:300px;background:#10b981;top:-80px;left:-60px}
+.bg i:nth-child(2){width:260px;height:260px;background:#a855f7;top:40%;right:-80px;animation-delay:-6s}
+.bg i:nth-child(3){width:240px;height:240px;background:#3b82f6;bottom:-60px;left:30%;animation-delay:-12s}
+@keyframes float{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
+.ic{width:20px;height:20px;flex-shrink:0}
+.ic.sm{width:16px;height:16px}
+.ic.lg{width:28px;height:28px}
+button,.btn{font:inherit;cursor:pointer;border:0;border-radius:14px;padding:11px 16px;color:#fff;background:linear-gradient(135deg,#10b981,#0d9488);font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:transform .15s,box-shadow .2s,filter .2s;box-shadow:0 6px 18px rgba(16,185,129,.25)}
+button:hover,.btn:hover{transform:translateY(-1px);filter:brightness(1.08)}
+button:active{transform:scale(.97)}
+button.danger{background:linear-gradient(135deg,#ef4444,#be123c);box-shadow:0 6px 18px rgba(239,68,68,.25)}
+button.ghost{background:var(--glass);border:1px solid var(--line);box-shadow:none}
+button.small{padding:7px 11px;font-size:13px;border-radius:11px}
+button:disabled{opacity:.5;cursor:not-allowed;transform:none}
+input,select,textarea{font:inherit;width:100%;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--text);margin-bottom:10px;outline:none;transition:border-color .2s,box-shadow .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--green);box-shadow:0 0 0 4px rgba(16,185,129,.15)}
+select option{color:#0f172a}
+input::placeholder,textarea::placeholder{color:#64748b}
+.card{background:var(--glass);border:1px solid var(--line);border-radius:22px;padding:18px;margin-bottom:14px;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 10px 30px rgba(0,0,0,.25);animation:rise .45s ease both}
+.card:hover{border-color:rgba(255,255,255,.18)}
+.card h3{margin:0 0 14px;font-size:16px;display:flex;align-items:center;gap:8px}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.grid{display:grid;gap:12px}
+.g2{grid-template-columns:1fr 1fr}.g4{grid-template-columns:repeat(4,1fr)}
+.stat{text-align:center;padding:16px 8px;margin:0}
+.stat .ico{width:38px;height:38px;border-radius:12px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center}
+.stat small{display:block;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.07em}
+.stat b{font-size:17px;display:block;margin-top:4px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid transparent;margin-bottom:8px;transition:background .2s,border-color .2s}
+.row:hover{background:rgba(255,255,255,.08);border-color:var(--line)}
+.muted{color:var(--muted);font-size:13px}
+.pos{color:#34d399}.neg{color:#f87171}
+.grad{background:linear-gradient(90deg,#34d399,#60a5fa);-webkit-background-clip:text;background-clip:text;color:transparent}
+.badge{font-size:11px;padding:4px 9px;border-radius:999px;font-weight:700;white-space:nowrap;display:inline-block}
+.b-ok{background:rgba(16,185,129,.18);color:#6ee7b7}.b-late{background:rgba(239,68,68,.18);color:#fca5a5}.b-part{background:rgba(245,158,11,.18);color:#fcd34d}.b-neutral{background:rgba(255,255,255,.1);color:#cbd5e1}
+.avatar{width:42px;height:42px;min-width:42px;border-radius:50%;background:linear-gradient(135deg,#a855f7,#6366f1);display:flex;align-items:center;justify-content:center;font-weight:800;box-shadow:0 4px 14px rgba(168,85,247,.35)}
+.bar{height:10px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
+.bar>i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#10b981,#34d399,#60a5fa);transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.ring-wrap{display:flex;align-items:center;gap:18px}
+.ring{width:110px;height:110px;flex-shrink:0}
+.ring .rbg{fill:none;stroke:rgba(255,255,255,.08);stroke-width:12}
+.ring .rfg{fill:none;stroke:url(#gradRing);stroke-width:12;stroke-linecap:round;transform:rotate(-90deg);transform-origin:60px 60px;transition:stroke-dashoffset .8s ease}
+.ring .rtxt{fill:#f1f5f9;font-size:22px;font-weight:800}
+.chart-box{position:relative;height:230px}
+.chart-box.small{height:200px}
+.tabs{display:flex;background:rgba(255,255,255,.06);border-radius:14px;padding:4px;margin-bottom:14px;gap:4px}
+.tabs button{flex:1;background:none;box-shadow:none;color:var(--muted);padding:9px;border-radius:11px}
+.tabs button.on{background:linear-gradient(135deg,#10b981,#0d9488);color:#fff;box-shadow:0 4px 12px rgba(16,185,129,.3)}
+.hero{text-align:center;padding:8px 0 4px}
+.logo{width:72px;height:72px;margin:0 auto 14px;border-radius:24px;background:linear-gradient(135deg,#34d399,#0d9488);display:flex;align-items:center;justify-content:center;box-shadow:0 14px 34px rgba(16,185,129,.4);animation:pulse 3s ease-in-out infinite}
+.logo .ic{width:36px;height:36px;color:#fff}
+@keyframes pulse{0%,100%{box-shadow:0 14px 34px rgba(16,185,129,.4)}50%{box-shadow:0 14px 48px rgba(16,185,129,.7)}}
+.centered{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.centered .card{width:100%;max-width:380px;margin:0}
+header.top{max-width:760px;margin:0 auto;padding:18px 16px 6px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+header.top h1{font-size:20px;margin:0;letter-spacing:.02em}
+main{max-width:760px;margin:0 auto;padding:10px 16px}
+nav{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);width:min(560px,calc(100% - 24px));background:rgba(15,23,42,.8);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--line);border-radius:22px;display:grid;grid-template-columns:repeat(6,1fr);padding:6px;z-index:50;box-shadow:0 20px 50px rgba(0,0,0,.45)}
+nav button{background:none;box-shadow:none;border-radius:16px;padding:8px 2px;font-size:10.5px;color:var(--muted);flex-direction:column;gap:3px;transform:none}
+nav button:hover{filter:none;background:rgba(255,255,255,.05);transform:none}
+nav button.on{color:#fff;background:linear-gradient(135deg,rgba(16,185,129,.35),rgba(20,184,166,.15));box-shadow:inset 0 0 0 1px rgba(16,185,129,.5)}
+nav button.on .ic{color:#6ee7b7}
+.filters{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px}
+#toast{position:fixed;top:16px;left:50%;transform:translate(-50%,-110px);background:linear-gradient(135deg,#10b981,#0d9488);color:#fff;padding:13px 20px;border-radius:16px;font-weight:700;transition:transform .4s cubic-bezier(.2,.9,.3,1.2);z-index:200;max-width:92%;box-shadow:0 12px 30px rgba(0,0,0,.35);display:flex;gap:8px;align-items:center}
+#toast.err{background:linear-gradient(135deg,#ef4444,#be123c)}
+#toast.show{transform:translate(-50%,0)}
+#printArea{display:none}
+@media (max-width:560px){.g4{grid-template-columns:1fr 1fr}.filters{grid-template-columns:1fr}.g2{grid-template-columns:1fr}}
+@media print{
+  body *{visibility:hidden}
+  #printArea,#printArea *{visibility:visible}
+  #printArea{display:block;position:absolute;left:0;top:0;width:100%;color:#000;background:#fff;padding:20px}
+  #printArea table{width:100%;border-collapse:collapse;margin-bottom:16px}
+  #printArea td,#printArea th{border:1px solid #ccc;padding:6px;text-align:left;font-size:12px}
+  body{background:#fff;padding:0}
+  .no-print{display:none!important}
+}
+</style>
+</head>
+<body>
+<div class="bg"><i></i><i></i><i></i></div>
+
+<!-- Configuration manquante -->
+<section id="setup" class="centered" hidden>
+  <div class="card">
+    <div class="hero">
+      <div class="logo" data-ic="settings"></div>
+      <h2 style="margin:0 0 8px">Configuration requise</h2>
+      <p class="muted">Renseignez l'adresse et la clé de votre projet Supabase dans le fichier, puis rechargez la page.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Connexion / inscription -->
+<section id="auth" class="centered" hidden>
+  <div class="card">
+    <div class="hero">
+      <div class="logo" data-ic="users"></div>
+      <h2 style="margin:0 0 4px">SYLLALA KABILA</h2>
+      <p class="muted" style="margin:0 0 18px">Gestion familiale partagée</p>
+    </div>
+    <div class="tabs">
+      <button id="tab-login" class="on" onclick="switchAuth('login')">Connexion</button>
+      <button id="tab-signup" onclick="switchAuth('signup')">Inscription</button>
+    </div>
+    <div id="f-name-wrap" hidden><input id="a-name" placeholder="Nom complet"></div>
+    <input id="a-email" type="email" placeholder="Adresse email" autocomplete="email">
+    <input id="a-pass" type="password" placeholder="Mot de passe (6 caractères min.)" autocomplete="current-password">
+    <button id="a-go" style="width:100%" onclick="authSubmit()">Se connecter</button>
+  </div>
+</section>
+
+<!-- Créer ou rejoindre une famille -->
+<section id="family" class="centered" hidden>
+  <div style="width:100%;max-width:380px">
+    <div class="card">
+      <div class="hero"><div class="logo" data-ic="users"></div>
+        <h2 style="margin:0 0 6px">Bienvenue</h2>
+        <p class="muted" style="margin:0 0 6px">Créez votre famille ou rejoignez-en une avec son code.</p></div>
+    </div>
+    <div class="card">
+      <h3><span data-ic="plus"></span> Créer une famille</h3>
+      <input id="f-name" placeholder="Nom de la famille">
+      <button style="width:100%" onclick="createFamily()">Créer</button>
+    </div>
+    <div class="card">
+      <h3><span data-ic="check"></span> Rejoindre une famille</h3>
+      <input id="f-code" placeholder="Code d'invitation (8 caractères)" style="text-transform:uppercase">
+      <button class="ghost" style="width:100%" onclick="joinFamily()">Rejoindre</button>
+    </div>
+    <button class="ghost" style="width:100%" onclick="logout()"><span data-ic="logout"></span> Se déconnecter</button>
+  </div>
+</section>
+
+<!-- Application -->
+<div id="app" class="no-print" hidden>
+  <header class="top">
+    <div style="display:flex;align-items:center;gap:12px;min-width:0">
+      <div class="avatar" style="width:40px;height:40px;min-width:40px;border-radius:14px;background:linear-gradient(135deg,#34d399,#0d9488)" data-ic="wallet"></div>
+      <div style="min-width:0">
+        <h1 id="appTitle" class="grad">SYLLALA</h1>
+        <div class="muted" id="today" style="font-size:12px"></div>
+      </div>
+    </div>
+    <button class="ghost small" onclick="printReport()"><span data-ic="printer"></span> Rapport</button>
+  </header>
+
+  <main>
+    <!-- ACCUEIL -->
+    <section id="v-home">
+      <div class="grid g4">
+        <div class="card stat"><div class="ico" style="background:rgba(16,185,129,.2)"><span data-ic="arrowUp"></span></div><small>Entrées</small><b class="pos" id="s-in">0</b></div>
+        <div class="card stat"><div class="ico" style="background:rgba(239,68,68,.2)"><span data-ic="arrowDown"></span></div><small>Dépenses</small><b class="neg" id="s-out">0</b></div>
+        <div class="card stat"><div class="ico" style="background:rgba(59,130,246,.2)"><span data-ic="wallet"></span></div><small>Solde net</small><b id="s-net">0</b></div>
+        <div class="card stat"><div class="ico" style="background:rgba(168,85,247,.2)"><span data-ic="coins"></span></div><small>Caisse réunions</small><b id="s-caisse">0</b></div>
+      </div>
+      <div class="card">
+        <h3><span data-ic="users"></span> Cotisations du mois</h3>
+        <div class="ring-wrap">
+          <svg class="ring" viewBox="0 0 120 120">
+            <defs><linearGradient id="gradRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#3b82f6"/></linearGradient></defs>
+            <circle class="rbg" cx="60" cy="60" r="52"/>
+            <circle class="rfg" id="ring-fg" cx="60" cy="60" r="52"/>
+            <text class="rtxt" x="60" y="67" text-anchor="middle" id="ring-txt">0%</text>
+          </svg>
+          <div style="flex:1;min-width:0">
+            <div id="mo-text" class="muted" style="margin-bottom:8px"></div>
+            <div class="bar"><i id="mo-bar" style="width:0%"></i></div>
+          </div>
+        </div>
+        <div id="mo-unpaid" style="margin-top:14px"></div>
+      </div>
+      <div class="card">
+        <h3><span data-ic="chart"></span> Évolution sur 6 mois</h3>
+        <div class="chart-box"><canvas id="c-bar"></canvas></div>
+      </div>
+      <div class="card">
+        <h3><span data-ic="arrowDown"></span> Dépenses par catégorie</h3>
+        <div id="cats-empty" class="muted" hidden>Aucune dépense enregistrée.</div>
+        <div class="chart-box small" id="cats-box"><canvas id="c-cats"></canvas></div>
+      </div>
+    </section>
+
+    <!-- SAISIE -->
+    <section id="v-saisie" hidden>
+      <div class="card">
+        <h3><span data-ic="arrowUp" class="pos"></span> Nouveau paiement</h3>
+        <select id="p-member"></select>
+        <div class="grid g2">
+          <select id="p-type" onchange="onPayType()">
+            <option value="mensuelle">Mensuelle</option>
+            <option value="ramadan">Ramadan</option>
+            <option value="offrande">Offrande</option>
+            <option value="autre">Autre</option>
+          </select>
+          <input id="p-amount" type="number" min="0" placeholder="Montant">
+        </div>
+        <div class="grid g2">
+          <input id="p-date" type="date">
+          <input id="p-note" placeholder="Note (facultatif)">
+        </div>
+        <button style="width:100%" onclick="addPayment()"><span data-ic="check"></span> Enregistrer le paiement</button>
+      </div>
+      <div class="card">
+        <h3><span data-ic="arrowDown" class="neg"></span> Nouvelle dépense</h3>
+        <input id="e-desc" placeholder="Description">
+        <div class="grid g2">
+          <select id="e-cat"></select>
+          <input id="e-amount" type="number" min="0" placeholder="Montant">
+        </div>
+        <input id="e-date" type="date">
+        <button class="danger" style="width:100%" onclick="addExpense()"><span data-ic="check"></span> Enregistrer la dépense</button>
+      </div>
+    </section>
+
+    <!-- MEMBRES -->
+    <section id="v-membres" hidden>
+      <div class="card">
+        <h3><span data-ic="plus"></span> Ajouter un membre</h3>
+        <input id="m-name" placeholder="Nom complet">
+        <input id="m-phone" type="tel" placeholder="Téléphone">
+        <button style="width:100%" onclick="addMember()">Ajouter le membre</button>
+      </div>
+      <div id="members"></div>
+    </section>
+
+    <!-- HISTORIQUE -->
+    <section id="v-hist" hidden>
+      <div class="card">
+        <div class="filters">
+          <input id="h-q" placeholder="Rechercher…" oninput="renderHist()">
+          <select id="h-type" onchange="renderHist()">
+            <option value="all">Tout</option>
+            <option value="in">Entrées</option>
+            <option value="out">Dépenses</option>
+          </select>
+          <input id="h-month" type="month" onchange="renderHist()">
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+          <span class="muted" id="hist-tot"></span>
+          <button class="ghost small" onclick="exportCSV()"><span data-ic="download"></span> Exporter CSV</button>
+        </div>
+      </div>
+      <div id="hist"></div>
+    </section>
+
+    <!-- RÉUNIONS / CAISSE -->
+    <section id="v-caisse" hidden>
+      <div class="card" style="background:linear-gradient(135deg,rgba(16,185,129,.25),rgba(59,130,246,.15))">
+        <div class="muted" style="text-transform:uppercase;letter-spacing:.07em;font-size:12px">Total collecté (caisse)</div>
+        <div style="font-size:34px;font-weight:900" class="grad" id="reu-total">0</div>
+      </div>
+      <div class="card">
+        <h3><span data-ic="coins"></span> Ajouter à la caisse</h3>
+        <input id="c-amount" type="number" min="0" placeholder="Montant">
+        <input id="c-note" placeholder="Note (facultatif)">
+        <button style="width:100%" onclick="addCaisse()">Ajouter au cumul</button>
+        <div id="caisse-log" style="margin-top:14px"></div>
+      </div>
+      <div class="card">
+        <h3><span data-ic="calendar"></span> Planifier une réunion</h3>
+        <input id="r-title" placeholder="Titre de la réunion">
+        <input id="r-date" type="datetime-local">
+        <input id="r-lieu" placeholder="Lieu">
+        <textarea id="r-details" rows="3" placeholder="Ordre du jour…"></textarea>
+        <button style="width:100%" onclick="addMeeting()">Créer la réunion</button>
+      </div>
+      <div id="meetings"></div>
+    </section>
+
+    <!-- RÉGLAGES -->
+    <section id="v-reglages" hidden>
+      <div class="card">
+        <h3><span data-ic="settings"></span> Famille</h3>
+        <input id="g-name" placeholder="Nom de la famille">
+        <div class="grid g2">
+          <input id="g-monthly" type="number" min="0" placeholder="Cotisation mensuelle">
+          <input id="g-currency" placeholder="Devise (ex : F)">
+        </div>
+        <button id="g-save" style="width:100%" onclick="saveGroup()">Enregistrer</button>
+        <p class="muted" id="g-note" style="margin:10px 0 0"></p>
+      </div>
+      <div class="card">
+        <h3><span data-ic="users"></span> Inviter quelqu'un</h3>
+        <p class="muted" style="margin-top:0">Partagez ce code : la personne le saisit à l'écran « Rejoindre une famille ».</p>
+        <div class="row"><b id="g-code" style="font-size:22px;letter-spacing:.2em">—</b><button class="ghost small" onclick="copyCode()">Copier</button></div>
+      </div>
+      <div class="card">
+        <h3><span data-ic="edit"></span> Mot de passe</h3>
+        <input id="pw-new" type="password" placeholder="Nouveau mot de passe (6 caractères min.)">
+        <button class="ghost" style="width:100%" onclick="changePassword()">Modifier le mot de passe</button>
+      </div>
+      <div class="card">
+        <h3><span data-ic="download"></span> Données</h3>
+        <button class="ghost" style="width:100%" onclick="exportCSV()"><span data-ic="download"></span> Exporter l'historique (CSV)</button>
+        <button class="ghost" style="width:100%;margin-top:10px" onclick="logout()"><span data-ic="logout"></span> Se déconnecter</button>
+      </div>
+    </section>
+  </main>
+
+  <nav class="no-print">
+    <button data-v="home" class="on" onclick="go('home')"><span data-ic="home"></span>Accueil</button>
+    <button data-v="saisie" onclick="go('saisie')"><span data-ic="plus"></span>Saisie</button>
+    <button data-v="membres" onclick="go('membres')"><span data-ic="users"></span>Membres</button>
+    <button data-v="hist" onclick="go('hist')"><span data-ic="history"></span>Historique</button>
+    <button data-v="caisse" onclick="go('caisse')"><span data-ic="coins"></span>Caisse</button>
+    <button data-v="reglages" onclick="go('reglages')"><span data-ic="settings"></span>Réglages</button>
+  </nav>
+</div>
+
+<div id="toast"></div>
+<div id="printArea"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+  // Hors ligne et installation : enregistre le service worker si le navigateur le permet
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+</script>
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+/* ============ CONFIGURATION : à remplir avec votre projet Supabase ============ */
+const SUPABASE_URL = 'https://xjxucuuxmxwianecmqoj.supabase.co';          // ex : https://xxxx.supabase.co
+const SUPABASE_ANON_KEY = 'sb_publishable_zK4KkJEG95lvIOH1at82Cg_Km278mU_';         // clé « anon public »
+/* ============================================================================= */
+
+const CONFIGURED = !SUPABASE_URL.startsWith('VOTRE');
+const sb = CONFIGURED ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+const EXP_CATS = ['Général', 'Nourriture', 'Santé', 'Éducation', 'Transport', 'Autre'];
+const PAY_TYPES = { mensuelle: 'Mensuelle', ramadan: 'Ramadan', offrande: 'Offrande', autre: 'Autre' };
+const PALETTE = ['#10b981', '#3b82f6', '#a855f7', '#f59e0b', '#ef4444', '#14b8a6', '#ec4899'];
+
+/* ---------- Icônes (style trait, cohérent) ---------- */
+const I = {
+  home: '<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  arrowUp: '<path d="M12 19V5M5 12l7-7 7 7"/>',
+  arrowDown: '<path d="M12 5v14M5 12l7 7 7-7"/>',
+  users: '<circle cx="9" cy="7" r="4"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/><path d="M16 3.1a4 4 0 0 1 0 7.8M22 21v-1a6 6 0 0 0-4-5.7"/>',
+  history: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/>',
+  calendar: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  settings: '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>',
+  trash: '<path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/>',
+  edit: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',
+  download: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>',
+  printer: '<path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>',
+  logout: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>',
+  wallet: '<path d="M20 7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16V7"/><circle cx="17" cy="14" r="1"/>',
+  coins: '<circle cx="8" cy="8" r="6"/><path d="M18.1 10.4A6 6 0 1 1 10.4 18.1"/>',
+  check: '<path d="M20 6L9 17l-5-5"/>',
+  x: '<path d="M18 6L6 18M6 6l12 12"/>',
+  chart: '<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/>'
+};
+function ic(name, cls = '') {
+  return `<svg class="ic ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[name] || ''}</svg>`;
+}
+function paintIcons(root = document) {
+  root.querySelectorAll('[data-ic]').forEach(el => {
+    const cls = el.className && el.tagName === 'SPAN' ? '' : '';
+    el.innerHTML = ic(el.dataset.ic, cls);
+  });
+}
+
+/* ---------- État ---------- */
+let user = null;
+let group = null;
+let D = { members: [], payments: [], expenses: [], meetings: [], caisse: [] };
+let view = 'home';
+let authMode = 'login';
+let charts = {};
+let subscribed = false;
+
+/* ---------- Utilitaires ---------- */
+const $ = id => document.getElementById(id);
+const v = id => $(id).value.trim();
+function clearFields(...ids) { ids.forEach(i => { $(i).value = ''; }); }
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function cur() { return group ? group.currency : 'F'; }
+function fmt(n) { return Math.round(n || 0).toLocaleString('fr-FR') + ' ' + cur(); }
+function today() {
+  const d = new Date();
+  return new Date(d.getTime() - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
+}
+function curMonth() { return today().slice(0, 7); }
+function monthLabel(ym) {
+  const [y, m] = ym.split('-');
+  return new Date(+y, +m - 1, 1).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+}
+function monthShort(ym) {
+  const [y, m] = ym.split('-');
+  return new Date(+y, +m - 1, 1).toLocaleDateString('fr-FR', { month: 'short' });
+}
+function toast(msg, err) {
+  const t = $('toast');
+  t.innerHTML = ic(err ? 'x' : 'check', 'sm') + `<span>${esc(msg)}</span>`;
+  t.className = (err ? 'err ' : '') + 'show';
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => { t.className = ''; }, 2800);
+}
+function download(content, type, name) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content], { type }));
+  a.download = name;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+function show(id) {
+  ['setup', 'auth', 'family', 'app'].forEach(x => { $(x).hidden = x !== id; });
+}
+
+/* ---------- Authentification ---------- */
+function switchAuth(m) {
+  authMode = m;
+  $('f-name-wrap').hidden = m !== 'signup';
+  $('a-go').textContent = m === 'login' ? 'Se connecter' : 'Créer mon compte';
+  $('a-pass').autocomplete = m === 'login' ? 'current-password' : 'new-password';
+  $('tab-login').classList.toggle('on', m === 'login');
+  $('tab-signup').classList.toggle('on', m === 'signup');
+}
+
+async function authSubmit() {
+  const email = v('a-email');
+  const password = $('a-pass').value;
+  if (!email || password.length < 6) return toast('Email et mot de passe (6 caractères min.) requis', true);
+  if (authMode === 'login') {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) return toast(error.message, true);
+    user = data.user;
+    return enterApp();
+  }
+  const { data, error } = await sb.auth.signUp({ email, password, options: { data: { full_name: v('a-name') } } });
+  if (error) return toast(error.message, true);
+  if (data.session) { user = data.user; return enterApp(); }
+  toast('Compte créé. Confirmez votre email, puis connectez-vous.');
+  switchAuth('login');
+}
+
+async function logout() {
+  if (sb) await sb.auth.signOut();
+  location.reload();
+}
+
+async function changePassword() {
+  const p = $('pw-new').value;
+  if (p.length < 6) return toast('6 caractères minimum', true);
+  const { error } = await sb.auth.updateUser({ password: p });
+  if (error) return toast(error.message, true);
+  clearFields('pw-new');
+  toast('Mot de passe modifié');
+}
+
+/* ---------- Familles ---------- */
+async function enterApp() {
+  const { data: groups, error } = await sb.from('groups').select('*').order('created_at');
+  if (error) { toast(error.message, true); return show('auth'); }
+  if (!groups.length) return show('family');
+  group = groups[0];
+  await loadAll();
+  subscribe();
+  show('app');
+  go('home');
+}
+
+async function createFamily() {
+  const name = v('f-name');
+  if (!name) return toast('Donnez un nom à la famille', true);
+  const { error } = await sb.rpc('create_group', { gname: name, gmonthly: 500, gcurrency: 'F' });
+  if (error) return toast(error.message, true);
+  enterApp();
+}
+
+async function joinFamily() {
+  const code = v('f-code').toUpperCase();
+  if (!code) return toast('Entrez le code', true);
+  const { error } = await sb.rpc('join_group', { join_code: code });
+  if (error) return toast(error.message, true);
+  enterApp();
+}
+
+async function loadAll() {
+  const gid = group.id;
+  const q = t => sb.from(t).select('*').eq('group_id', gid);
+  const [m, p, e, mt, c] = await Promise.all([
+    q('members').order('name'),
+    q('payments').order('date', { ascending: false }),
+    q('expenses').order('date', { ascending: false }),
+    q('meetings').order('starts_at'),
+    q('caisse').order('date', { ascending: false })
+  ]);
+  for (const r of [m, p, e, mt, c]) if (r.error) toast(r.error.message, true);
+  D = { members: m.data || [], payments: p.data || [], expenses: e.data || [], meetings: mt.data || [], caisse: c.data || [] };
+}
+
+async function refresh() {
+  if (!group) return;
+  await loadAll();
+  render();
+}
+
+function subscribe() {
+  if (subscribed || !sb) return;
+  subscribed = true;
+  ['members', 'payments', 'expenses', 'meetings', 'caisse'].forEach(t => {
+    sb.channel('rt-' + t)
+      .on('postgres_changes', { event: '*', schema: 'public', table: t, filter: `group_id=eq.${group.id}` }, () => refresh())
+      .subscribe();
+  });
+}
+
+async function write(promise, msg) {
+  const { error } = await promise;
+  if (error) { toast(error.message, true); return false; }
+  await refresh();
+  if (msg) toast(msg);
+  return true;
+}
+
+/* ---------- Calculs ---------- */
+function totals() {
+  const inn = D.payments.reduce((a, p) => a + Number(p.amount), 0);
+  const out = D.expenses.reduce((a, e) => a + Number(e.amount), 0);
+  const caisse = D.caisse.reduce((a, c) => a + Number(c.amount), 0);
+  return { inn, out, net: inn - out, caisse };
+}
+function monthlyPaid(memberId, month) {
+  return D.payments
+    .filter(p => p.member_id === memberId && p.type === 'mensuelle' && p.date.slice(0, 7) === month)
+    .reduce((a, p) => a + Number(p.amount), 0);
+}
+function memberStatus(m) {
+  const paid = monthlyPaid(m.id, curMonth());
+  if (paid >= group.monthly) return 'ok';
+  return paid > 0 ? 'partial' : 'late';
+}
+function statusBadge(s) {
+  const map = { ok: ['b-ok', 'À jour'], partial: ['b-part', 'Partiel'], late: ['b-late', 'Non payé'] };
+  const [c, l] = map[s];
+  return `<span class="badge ${c}">${l}</span>`;
+}
+function allEntries() {
+  return [
+    ...D.payments.map(p => ({ kind: 'in', id: p.id, date: p.date, label: `${p.member_name} — ${PAY_TYPES[p.type] || p.type}`, amount: Number(p.amount), note: p.note || '' })),
+    ...D.expenses.map(e => ({ kind: 'out', id: e.id, date: e.date, label: `${e.description} (${e.category})`, amount: Number(e.amount), note: '' }))
+  ];
+}
+function getFiltered() {
+  const q = v('h-q').toLowerCase();
+  const type = $('h-type').value;
+  const month = $('h-month').value;
+  return allEntries()
+    .filter(x => (type === 'all' || x.kind === type) && (!month || x.date.startsWith(month)) && (!q || (x.label + ' ' + x.note).toLowerCase().includes(q)))
+    .sort((a, b) => b.date.localeCompare(a.date));
+}
+
+/* ---------- Navigation ---------- */
+const VIEWS = ['home', 'saisie', 'membres', 'hist', 'caisse', 'reglages'];
+function go(name) {
+  view = name;
+  VIEWS.forEach(x => { $('v-' + (x === 'reglages' ? 'reglages' : x)).hidden = x !== name; });
+  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.v === name));
+  if (name === 'reglages') fillSettings();
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ---------- Rendu ---------- */
+function render() {
+  if (!group) return;
+  $('appTitle').textContent = group.name;
+  document.title = group.name;
+  $('today').textContent = new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+  renderSelects();
+  renderMembers();
+  renderHist();
+  renderCaisse();
+  renderHome();
+}
+
+function renderSelects() {
+  const sel = $('p-member');
+  const prev = sel.value;
+  sel.innerHTML = D.members.length
+    ? D.members.map(m => `<option value="${esc(m.id)}">${esc(m.name)}</option>`).join('')
+    : '<option value="">— aucun membre —</option>';
+  if (prev && D.members.some(m => m.id === prev)) sel.value = prev;
+  const cat = $('e-cat');
+  const pc = cat.value;
+  cat.innerHTML = EXP_CATS.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+  if (pc) cat.value = pc;
+}
+
+function renderHome() {
+  if (view !== 'home') return;
+  const t = totals();
+  $('s-in').textContent = fmt(t.inn);
+  $('s-out').textContent = fmt(t.out);
+  $('s-net').textContent = fmt(t.net);
+  $('s-net').className = t.net >= 0 ? 'pos' : 'neg';
+  $('s-caisse').textContent = fmt(t.caisse);
+
+  // Cotisations
+  const n = D.members.length;
+  const ok = D.members.filter(m => memberStatus(m) === 'ok').length;
+  const pct = n ? Math.round(ok / n * 100) : 0;
+  const C = 2 * Math.PI * 52;
+  $('ring-fg').style.strokeDasharray = C;
+  $('ring-fg').style.strokeDashoffset = C * (1 - pct / 100);
+  $('ring-txt').textContent = pct + '%';
+  $('mo-bar').style.width = pct + '%';
+  if (!n) {
+    $('mo-text').textContent = 'Ajoutez des membres pour suivre les cotisations.';
+    $('mo-unpaid').innerHTML = '';
+  } else {
+    $('mo-text').textContent = `${ok}/${n} membres à jour pour ${monthLabel(curMonth())}`;
+    const unpaid = D.members.filter(m => memberStatus(m) !== 'ok');
+    $('mo-unpaid').innerHTML = unpaid.length
+      ? unpaid.map(m => {
+          const rem = Math.max(0, group.monthly - monthlyPaid(m.id, curMonth()));
+          return `<div class="row"><span>${esc(m.name)}</span><span class="neg">Reste ${fmt(rem)}</span></div>`;
+        }).join('')
+      : '<p class="pos" style="margin:0">Tout le monde est à jour 🎉</p>';
+  }
+
+  drawCharts();
+}
+
+function drawCharts() {
+  if (!window.Chart) return;
+  const months = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(1);
+    d.setMonth(d.getMonth() - i);
+    months.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
+  }
+  const ins = months.map(k => D.payments.filter(p => p.date.startsWith(k)).reduce((a, p) => a + Number(p.amount), 0));
+  const outs = months.map(k => D.expenses.filter(e => e.date.startsWith(k)).reduce((a, e) => a + Number(e.amount), 0));
+  const grid = { color: 'rgba(255,255,255,.06)' };
+  const tick = { color: '#94a3b8' };
+
+  charts.bar?.destroy();
+  charts.bar = new Chart($('c-bar'), {
+    type: 'bar',
+    data: {
+      labels: months.map(monthShort),
+      datasets: [
+        { label: 'Entrées', data: ins, backgroundColor: '#10b981', borderRadius: 8 },
+        { label: 'Dépenses', data: outs, backgroundColor: '#ef4444', borderRadius: 8 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#cbd5e1' } } },
+      scales: { x: { ticks: tick, grid: { display: false } }, y: { ticks: tick, grid } }
+    }
+  });
+
+  const cats = {};
+  D.expenses.forEach(e => { cats[e.category] = (cats[e.category] || 0) + Number(e.amount); });
+  const entries = Object.entries(cats).sort((a, b) => b[1] - a[1]);
+  $('cats-empty').hidden = entries.length > 0;
+  $('cats-box').hidden = entries.length === 0;
+  charts.cats?.destroy();
+  if (entries.length) {
+    charts.cats = new Chart($('c-cats'), {
+      type: 'doughnut',
+      data: {
+        labels: entries.map(e => e[0]),
+        datasets: [{ data: entries.map(e => e[1]), backgroundColor: PALETTE, borderColor: '#0b1020', borderWidth: 3 }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false, cutout: '62%',
+        plugins: { legend: { position: 'right', labels: { color: '#cbd5e1', boxWidth: 12 } } }
+      }
+    });
+  }
+}
+
+function renderMembers() {
+  if (view !== 'membres') return;
+  $('members').innerHTML = D.members.length
+    ? D.members.map(m => {
+        const st = memberStatus(m);
+        const total = D.payments.filter(p => p.member_id === m.id).reduce((a, p) => a + Number(p.amount), 0);
+        return `
+        <div class="row">
+          <div style="display:flex;gap:12px;align-items:center;min-width:0">
+            <div class="avatar">${esc(m.name.charAt(0).toUpperCase())}</div>
+            <div style="min-width:0">
+              <b>${esc(m.name)}</b>
+              <div class="muted">${esc(m.phone || 'Pas de téléphone')} · Versé : ${fmt(total)}</div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+            ${statusBadge(st)}
+            <div style="display:flex;gap:6px">
+              <button class="ghost small" onclick="editMember('${m.id}')" title="Modifier">${ic('edit', 'sm')}</button>
+              <button class="danger small" onclick="deleteMember('${m.id}')" title="Supprimer">${ic('trash', 'sm')}</button>
+            </div>
+          </div>
+        </div>`;
+      }).join('')
+    : '<p class="muted">Aucun membre. Ajoutez-en un ci-dessus.</p>';
+}
+
+function renderHist() {
+  if (view !== 'hist' && view !== 'reglages') return;
+  const list = getFiltered();
+  const t = list.reduce((a, x) => { if (x.kind === 'in') a.i += x.amount; else a.o += x.amount; return a; }, { i: 0, o: 0 });
+  $('hist-tot').textContent = `${list.length} opération(s) · Entrées ${fmt(t.i)} · Dépenses ${fmt(t.o)}`;
+  $('hist').innerHTML = list.length
+    ? list.map(x => `
+      <div class="row">
+        <div style="min-width:0">
+          <div style="font-weight:600;overflow:hidden;text-overflow:ellipsis">${esc(x.label)}</div>
+          <div class="muted">${new Date(x.date + 'T00:00').toLocaleDateString('fr-FR')}${x.note ? ' · ' + esc(x.note) : ''}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;white-space:nowrap">
+          <b class="${x.kind === 'in' ? 'pos' : 'neg'}">${x.kind === 'in' ? '+' : '−'}${fmt(x.amount)}</b>
+          <button class="ghost small" onclick="deleteEntry('${x.kind}','${x.id}')" title="Supprimer">${ic('trash', 'sm')}</button>
+        </div>
+      </div>`).join('')
+    : '<p class="muted">Aucune opération trouvée.</p>';
+}
+
+function renderCaisse() {
+  if (view !== 'caisse') return;
+  const total = D.caisse.reduce((a, c) => a + Number(c.amount), 0);
+  $('reu-total').textContent = fmt(total);
+  $('caisse-log').innerHTML = D.caisse.length
+    ? '<p class="muted" style="margin:0 0 8px">Dernières contributions</p>' + D.caisse.slice(0, 8).map(l => `
+        <div class="row">
+          <span>${new Date(l.date + 'T00:00').toLocaleDateString('fr-FR')}${l.note ? ' · ' + esc(l.note) : ''}</span>
+          <span style="display:flex;align-items:center;gap:8px"><b class="pos">+${fmt(l.amount)}</b>
+            <button class="ghost small" onclick="delCaisse('${l.id}')" title="Supprimer">${ic('trash', 'sm')}</button></span>
+        </div>`).join('')
+    : '<p class="muted">Aucune contribution enregistrée.</p>';
+
+  const now = Date.now();
+  $('meetings').innerHTML = D.meetings.length
+    ? D.meetings.map(r => {
+        const past = new Date(r.starts_at).getTime() < now;
+        return `
+        <div class="card" style="border-left:4px solid var(--purple)">
+          <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+            <div style="min-width:0">
+              <b>${esc(r.title)}</b>
+              <span class="badge ${past ? 'b-neutral' : 'b-ok'}" style="margin-left:6px">${past ? 'Passée' : 'À venir'}</span>
+              <div class="muted" style="margin-top:8px">${ic('calendar', 'sm')} ${new Date(r.starts_at).toLocaleString('fr-FR', { dateStyle: 'full', timeStyle: 'short' })}</div>
+              <div class="muted">📍 ${esc(r.lieu)}</div>
+              ${r.details ? `<div class="muted" style="margin-top:8px;white-space:pre-wrap">${esc(r.details)}</div>` : ''}
+            </div>
+            <button class="danger small" onclick="deleteMeeting('${r.id}')" title="Supprimer">${ic('trash', 'sm')}</button>
+          </div>
+        </div>`;
+      }).join('')
+    : '';
+}
+
+function fillSettings() {
+  const isOwner = group.owner === user.id;
+  $('g-name').value = group.name;
+  $('g-monthly').value = group.monthly;
+  $('g-currency').value = group.currency;
+  $('g-code').textContent = group.code;
+  ['g-name', 'g-monthly', 'g-currency'].forEach(i => { $(i).disabled = !isOwner; });
+  $('g-save').hidden = !isOwner;
+  $('g-note').textContent = isOwner ? '' : 'Seul le créateur de la famille peut modifier ces paramètres.';
+}
+
+/* ---------- Actions : saisie ---------- */
+function onPayType() {
+  if ($('p-type').value === 'mensuelle') $('p-amount').value = group.monthly;
+}
+
+async function addPayment() {
+  const mid = v('p-member');
+  const amount = parseInt(v('p-amount'), 10);
+  if (!mid) return toast("Ajoutez d'abord un membre", true);
+  if (!(amount > 0)) return toast('Montant invalide', true);
+  const m = D.members.find(x => x.id === mid);
+  const ok = await write(sb.from('payments').insert({
+    group_id: group.id, member_id: mid, member_name: m ? m.name : 'Inconnu',
+    type: $('p-type').value, amount, date: v('p-date') || today(), note: v('p-note'), created_by: user.id
+  }), 'Paiement enregistré');
+  if (ok) clearFields('p-amount', 'p-note');
+}
+
+async function addExpense() {
+  const description = v('e-desc');
+  const amount = parseInt(v('e-amount'), 10);
+  if (!description) return toast('Description requise', true);
+  if (!(amount > 0)) return toast('Montant invalide', true);
+  const ok = await write(sb.from('expenses').insert({
+    group_id: group.id, description, category: $('e-cat').value, amount, date: v('e-date') || today()
+  }), 'Dépense enregistrée');
+  if (ok) clearFields('e-desc', 'e-amount');
+}
+
+/* ---------- Actions : membres ---------- */
+async function addMember() {
+  const name = v('m-name');
+  if (!name) return toast('Entrez un nom', true);
+  const ok = await write(sb.from('members').insert({ group_id: group.id, name, phone: v('m-phone') }), 'Membre ajouté');
+  if (ok) clearFields('m-name', 'm-phone');
+}
+
+async function editMember(id) {
+  const m = D.members.find(x => x.id === id);
+  if (!m) return;
+  const n = prompt('Nom du membre', m.name);
+  if (n === null) return;
+  if (!n.trim()) return toast('Nom requis', true);
+  const ph = prompt('Téléphone', m.phone || '');
+  if (ph === null) return;
+  await write(sb.from('members').update({ name: n.trim(), phone: ph.trim() }).eq('id', id));
+  await write(sb.from('payments').update({ member_name: n.trim() }).eq('member_id', id), 'Membre mis à jour');
+}
+
+async function deleteMember(id) {
+  if (!confirm("Supprimer ce membre ? Ses paiements déjà enregistrés restent dans l'historique.")) return;
+  await write(sb.from('members').delete().eq('id', id), 'Membre supprimé');
+}
+
+/* ---------- Actions : historique ---------- */
+async function deleteEntry(kind, id) {
+  if (!confirm('Supprimer cette opération ?')) return;
+  await write(sb.from(kind === 'in' ? 'payments' : 'expenses').delete().eq('id', id), 'Opération supprimée');
+}
+
+function exportCSV() {
+  const list = getFiltered();
+  if (!list.length) return toast('Rien à exporter', true);
+  const head = 'Date;Type;Libellé;Montant;Note';
+  const lines = list.map(x => [x.date, x.kind === 'in' ? 'Entrée' : 'Dépense', x.label, x.amount, x.note]
+    .map(c => `"${String(c).replace(/"/g, '""')}"`).join(';'));
+  download('﻿' + [head, ...lines].join('\n'), 'text/csv;charset=utf-8', 'syllala-historique-' + today() + '.csv');
+}
+
+/* ---------- Actions : caisse et réunions ---------- */
+async function addCaisse() {
+  const amount = parseInt(v('c-amount'), 10);
+  if (!(amount > 0)) return toast('Entrez un montant valide', true);
+  const ok = await write(sb.from('caisse').insert({ group_id: group.id, amount, date: today(), note: v('c-note') }), `${fmt(amount)} ajoutés au cumul`);
+  if (ok) clearFields('c-amount', 'c-note');
+}
+
+async function delCaisse(id) {
+  if (!confirm('Supprimer cette contribution ?')) return;
+  await write(sb.from('caisse').delete().eq('id', id), 'Contribution supprimée');
+}
+
+async function addMeeting() {
+  const title = v('r-title');
+  const date = $('r-date').value;
+  const lieu = v('r-lieu');
+  if (!title || !date || !lieu) return toast('Titre, date et lieu sont requis', true);
+  const ok = await write(sb.from('meetings').insert({
+    group_id: group.id, title, starts_at: new Date(date).toISOString(), lieu, details: v('r-details')
+  }), 'Réunion créée');
+  if (ok) clearFields('r-title', 'r-date', 'r-lieu', 'r-details');
+}
+
+async function deleteMeeting(id) {
+  if (!confirm('Supprimer cette réunion ?')) return;
+  await write(sb.from('meetings').delete().eq('id', id), 'Réunion supprimée');
+}
+
+/* ---------- Réglages ---------- */
+async function saveGroup() {
+  const name = v('g-name') || group.name;
+  const monthly = parseInt(v('g-monthly'), 10) || 500;
+  const currency = v('g-currency') || 'F';
+  const { error } = await sb.from('groups').update({ name, monthly, currency }).eq('id', group.id);
+  if (error) return toast(error.message, true);
+  const { data } = await sb.from('groups').select('*').eq('id', group.id).single();
+  if (data) group = data;
+  fillSettings();
+  render();
+  toast('Famille mise à jour');
+}
+
+function copyCode() {
+  navigator.clipboard?.writeText(group.code);
+  toast('Code copié : ' + group.code);
+}
+
+/* ---------- Rapport imprimable ---------- */
+function printReport() {
+  const t = totals();
+  const month = curMonth();
+  const memberRows = D.members.map(m =>
+    `<tr><td>${esc(m.name)}</td><td>${esc(m.phone)}</td><td>${fmt(monthlyPaid(m.id, month))}</td><td>${memberStatus(m) === 'ok' ? 'À jour' : memberStatus(m) === 'partial' ? 'Partiel' : 'Non payé'}</td></tr>`
+  ).join('');
+  const entryRows = allEntries().sort((a, b) => b.date.localeCompare(a.date)).map(x =>
+    `<tr><td>${x.date}</td><td>${x.kind === 'in' ? 'Entrée' : 'Dépense'}</td><td>${esc(x.label)}</td><td>${fmt(x.amount)}</td></tr>`
+  ).join('');
+  $('printArea').innerHTML = `
+    <h2>${esc(group.name)} — Rapport du ${new Date().toLocaleDateString('fr-FR')}</h2>
+    <p>Entrées : ${fmt(t.inn)} · Dépenses : ${fmt(t.out)} · Solde net : ${fmt(t.net)} · Caisse réunions : ${fmt(t.caisse)}</p>
+    <h3>Cotisations — ${esc(monthLabel(month))}</h3>
+    <table><tr><th>Nom</th><th>Téléphone</th><th>Versé ce mois</th><th>Statut</th></tr>${memberRows}</table>
+    <h3>Historique</h3>
+    <table><tr><th>Date</th><th>Type</th><th>Libellé</th><th>Montant</th></tr>${entryRows}</table>`;
+  window.print();
+}
+
+/* ---------- Exposition aux boutons HTML ---------- */
+Object.assign(window, {
+  go, switchAuth, authSubmit, logout, changePassword, createFamily, joinFamily,
+  onPayType, addPayment, addExpense, addMember, editMember, deleteMember,
+  renderHist, deleteEntry, exportCSV, addCaisse, delCaisse, addMeeting, deleteMeeting,
+  saveGroup, copyCode, printReport
+});
+
+/* ---------- Démarrage ---------- */
+paintIcons();
+$('p-date').value = today();
+$('e-date').value = today();
+$('a-pass').addEventListener('keydown', e => { if (e.key === 'Enter') authSubmit(); });
+$('f-code').addEventListener('keydown', e => { if (e.key === 'Enter') joinFamily(); });
+
+(async function init() {
+  if (!CONFIGURED) return show('setup');
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return show('auth');
+  user = session.user;
+  enterApp();
+})();
+</script>
+</body>
+</html>
